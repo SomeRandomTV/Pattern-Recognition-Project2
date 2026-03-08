@@ -21,7 +21,6 @@ from pathlib import Path
 
 DEFAULT_DATA_PATH = Path.cwd() / "Proj2&3DataSet.xlsx"
 
-
 class SoftMarginSVM:
 
     def __init__(self, data_path: Path):
@@ -32,7 +31,11 @@ class SoftMarginSVM:
         
         self.data = self._load_data(data_path=data_path)
         self.inputs = self.data[["x_1", "x_2"]]
-        self.targets = self.data["class"]
+        self.labels = self.data["class"]
+        self.num_samples, self.num_features = self.inputs.shape
+        self.lambdas = np.zeros(self.num_samples) 
+
+
 
     @staticmethod
     def _load_data(data_path: Path):
@@ -48,7 +51,7 @@ class SoftMarginSVM:
             return None
         except Exception as e: 
             raise(f"ERROR: Uncaught Exception: {e}")
-            return none
+            return None
     
 
     def print_df_info(self):
@@ -57,7 +60,25 @@ class SoftMarginSVM:
         print(f"-- DF Head \n {self.data.head()}\n")
         print(f"-- DF Details\n {self.data.describe()}\n")
 
+    def _kernel(x, z):
+        
+        pass        
+
+    def _compute_gram_matrix(X):
+
+        pass
+
+
+    def fit(X,y, type="linear", C=0.1):
+        pass
     
+
+    def plot_data(self):
+        plt.scatter(x=self.inputs["x_1"], y=self.inputs["x_2"], c=self.labels)
+        plt.xlabel("x_1")
+        plt.ylabel("x_2")
+        plt.show()
+
 
 
 
@@ -72,8 +93,9 @@ def main():
     print(f"-> Working with Data at: {path_to_data}")
 
 
-    SM_SVM = SoftMarginSVM(data_path=path_to_data)
-    SM_SVM.print_df_info()
+    svm = SoftMarginSVM(data_path=path_to_data)
+    svm.print_df_info()
+    svm.plot_data()
 
 if __name__ == "__main__":
     main()
