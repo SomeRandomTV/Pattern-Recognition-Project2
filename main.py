@@ -30,8 +30,8 @@ class SoftMarginSVM:
             data_path = DEFAULT_DATA_PATH
         
         self.data = self._load_data(data_path=data_path)
-        self.inputs = self.data[["x_1", "x_2"]]
-        self.labels = self.data["class"]
+        self.inputs = np.array(self.data[["x_1", "x_2"]])
+        self.labels = np.array(self.data["class"])
         self.num_samples, self.num_features = self.inputs.shape
         self.lambdas = np.zeros(self.num_samples) 
 
@@ -59,17 +59,45 @@ class SoftMarginSVM:
         print("========== Dataset Details ==========")
         print(f"-- DF Head \n {self.data.head()}\n")
         print(f"-- DF Details\n {self.data.describe()}\n")
+    
 
-    def _kernel(x, z):
+    @staticmethod
+    def _kernel(x, z, k_type, **kwargs):
+        """
+        Computes the linear or RBF kernel function k(x_i, x_j)
         
-        pass        
+        :param x => i_th training sample
+        :param z => j_th training sample
+        """
 
-    def _compute_gram_matrix(X):
+        if k_type == "linear":
+            return np.dot(x,z)
 
-        pass
+        elif k_type == "RBF":
+            sigma = kwargs.get("sigma")
+            if sigma is None or sigma == 0:
+                raise ValueError("ERROR: Sigma for RBF Kernel cannot be None or 0")
+            e_dist = np.linalg.norm(x - z) ** 2
+            return (-np.exp(e_dist / (2 * sigma ** 2)))
+
+     
+
+    @staticmethod
+    def _compute_gram_matrix(X, k_type):
+
+        k = np.zeros(num_features, num_features)
+
+        for i in range(len(k[0])):
+            for j in range(i, k[0]):
+                k[i][j] = self._kernel(X[i], X[j], k_type)
+                k[j][i] = k[i][j]
+
+        return k
+
+      
 
 
-    def fit(X,y, type="linear", C=0.1):
+    def fit(self, type="linear", C=0.1):
         pass
     
 
